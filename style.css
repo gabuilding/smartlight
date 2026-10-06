@@ -1,0 +1,418 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    min-height: 100vh;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+    -webkit-font-smoothing: antialiased;
+}
+
+.refresh-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(5px);
+}
+
+.refresh-overlay.show {
+    display: flex;
+}
+
+.refresh-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    animation: refreshFadeIn 0.35s ease;
+}
+
+.refresh-logo {
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    animation: refreshPulse 1s ease-in-out infinite;
+}
+
+.refresh-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.refresh-title {
+    margin-top: 5px;
+
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.refresh-subtitle {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+@keyframes refreshPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+@keyframes refreshRotate {
+    0% {
+        border-radius: 16px;
+    }
+
+    50% {
+        border-radius: 50%;
+    }
+
+    100% {
+        border-radius: 16px;
+    }
+}
+
+@keyframes refreshFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+.dashboard { width: 100%; min-height: 100vh; padding: 24px 32px; }
+.dashboard-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; margin-bottom: 24px;
+}
+.brand { display: flex; flex-direction: column; gap: 4px; }
+.brand h1 { font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -.6px; color: #111827; }
+.brand span { font-size: 14px; color: #6b7280; }
+.header-right { display: flex; align-items: center; gap: 24px; }
+.location-selector {
+    height: 44px; min-width: 310px; display: flex; align-items: center; gap: 9px;
+    padding: 0 14px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+}
+.location-selector svg { width: 18px; height: 18px; color: #6b7280; flex-shrink: 0; }
+.location-selector select {
+    flex: 1; min-width: 0; border: 0; outline: 0; appearance: none;
+    background: transparent; color: #374151; font-size: 14px; font-weight: 500;
+}
+
+.clock { min-width: 130px; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.clock strong { font-size: 22px; line-height: 1; color: #111827; }
+.clock span { font-size: 12px; color: #6b7280; }
+
+.dashboard-content {
+    width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+}
+.dashboard-card {
+    min-width: 0; min-height: 150px; padding: 16px 18px; background: #fff;
+    border: 1px solid #e5e7eb; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15,23,42,.04);
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+.dashboard-card:hover { border-color: #d7dce2; box-shadow: 0 5px 16px rgba(15,23,42,.05); }
+.card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.card-title { display: flex; align-items: center; gap: 9px; color: #26364a; font-size: 18px; font-weight: 600; }
+.card-title svg { width: 21px; height: 21px; color: #687589; flex-shrink: 0; }
+
+#deviceStatus { display: inline-block; margin-bottom: 24px; font-size: 28px; line-height: 1; font-weight: 700; }
+#deviceStatus.online { color: #16a34a; }
+#deviceStatus.offline { color: #dc2626; }
+
+.wifi-device-section { margin-top: 2px; }
+.wifi-device-label { display: block; margin-bottom: 7px; font-size: 12px; font-weight: 600; color: #6b7280; }
+.wifi-dropdown-wrapper { position: relative; width: 100%; }
+.wifi-dropdown-button {
+    width: 100%; min-height: 34px; padding: 3px 0; border: 0; background: transparent;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    color: #111827; text-align: left;
+}
+.wifi-dropdown-button:hover { color: #111827; }
+.wifi-current { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.wifi-main-icon { width: 19px; height: 19px; color: #5f6b7a; flex-shrink: 0; }
+.wifi-dropdown-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; }
+.wifi-rssi-inline { display: inline-flex; align-items: center; gap: 7px; margin-left: 3px; color: #8b96a5; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.wifi-signal-bars {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    width: 18px;
+    height: 17px;
+    flex-shrink: 0;
+}
+
+.wifi-signal-bars i {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: #d1d5db;
+    transition: all 0.2s ease;
+}
+
+/* Tinggi masing-masing bar */
+.wifi-signal-bars i:nth-child(1) {
+    height: 5px;
+}
+
+.wifi-signal-bars i:nth-child(2) {
+    height: 8px;
+}
+
+.wifi-signal-bars i:nth-child(3) {
+    height: 12px;
+}
+
+.wifi-signal-bars i:nth-child(4) {
+    height: 16px;
+}
+
+/* RSSI sangat kuat */
+.wifi-signal-bars.level-4 i {
+    background: #16a34a;
+}
+
+/* RSSI kuat */
+.wifi-signal-bars.level-3 i:nth-child(-n+3) {
+    background: #16a34a;
+}
+
+/* RSSI sedang */
+.wifi-signal-bars.level-2 i:nth-child(-n+2) {
+    background: #f59e0b;
+}
+
+/* RSSI lemah */
+.wifi-signal-bars.level-1 i:nth-child(1) {
+    background: #dc2626;
+}
+
+/* Bar yang tidak aktif */
+.wifi-signal-bars.level-3 i:nth-child(4),
+.wifi-signal-bars.level-2 i:nth-child(n+3),
+.wifi-signal-bars.level-1 i:nth-child(n+2) {
+    background: #d1d5db;
+}
+
+/* OFFLINE */
+.wifi-signal-bars.offline {
+    position: relative;
+}
+
+.wifi-signal-bars.offline i {
+    background: #d1d5db;
+}
+
+.wifi-signal-bars.offline::after {
+    content: "×";
+    position: absolute;
+    left: 7px;
+    top: -5px;
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: 700;
+    color: #dc2626;
+}
+
+.wifi-chevron { width: 17px; height: 17px; color: #667384; flex-shrink: 0; transition: transform .2s ease; }
+.wifi-dropdown-button.active .wifi-chevron { transform: rotate(180deg); }
+
+.wifi-dropdown-menu {
+    position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 50;
+    display: none; overflow: hidden; background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 12px; box-shadow: 0 12px 30px rgba(15,23,42,.12);
+}
+.wifi-dropdown-menu.show { display: block; }
+.wifi-network-list { max-height: 180px; overflow-y: auto; }
+.wifi-network-item {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 11px 13px; border: 0; background: #fff; color: #374151; font-size: 13px; text-align: left;
+}
+.wifi-network-item:hover, .wifi-network-item.selected { background: #f5f7fa; }
+.wifi-network-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 72%; }
+.wifi-network-rssi { flex-shrink: 0; color: #9ca3af; font-size: 11px; }
+.wifi-network-empty { padding: 14px; text-align: center; color: #9ca3af; font-size: 12px; }
+.wifi-scan-option {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 11px 12px; border: 0; border-top: 1px solid #eef0f2; background: #fafbfc;
+    color: #374151; font-size: 12px; font-weight: 600;
+}
+.wifi-scan-option:hover { background: #f3f4f6; }
+.wifi-scan-option:disabled { opacity: .5; cursor: not-allowed; }
+.wifi-scan-option i { width: 15px; height: 15px; }
+.wifi-scan-option.scanning i { animation: wifi-spin 1s linear infinite; }
+@keyframes wifi-spin { to { transform: rotate(360deg); } }
+
+.wifi-password-section { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid #eef0f2; }
+.wifi-password-section.show { display: block; }
+.wifi-password { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; outline: none; color: #111827; background: #fff; font-size: 13px; }
+.wifi-password:focus { border-color: #111827; box-shadow: 0 0 0 2px rgba(17,24,39,.07); }
+.wifi-connect-btn {
+    width: 100%; margin-top: 9px; display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 10px 14px; border: 0; border-radius: 8px; background: #111827; color: #fff; font-size: 13px; font-weight: 600;
+}
+
+.wifi-password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.wifi-password-wrapper .wifi-password {
+    padding-right: 42px;
+}
+
+.wifi-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+.wifi-password-toggle:hover {
+    color: #374151;
+}
+
+.wifi-password-toggle i {
+    width: 17px;
+    height: 17px;
+}
+
+.wifi-connect-btn:hover { background: #1f2937; }
+.wifi-connect-btn:disabled { opacity: .5; cursor: not-allowed; }
+.wifi-connect-btn i { width: 16px; height: 16px; }
+.wifi-config-status { margin-top: 9px; font-size: 12px; line-height: 1.4; }
+.wifi-config-status.info, .wifi-config-status.success, .wifi-config-status.error, .wifi-config-status.connecting { display: block; padding: 8px 10px; border-radius: 7px; }
+.wifi-config-status.info { background: #eff6ff; color: #1d4ed8; }
+.wifi-config-status.success { background: #ecfdf5; color: #047857; }
+.wifi-config-status.error { background: #fef2f2; color: #dc2626; }
+.wifi-config-status.connecting { background: #fffbeb; color: #b45309; }
+
+.lamp-status { min-height: 120px; display: flex; align-items: center; gap: 20px; }
+.lamp-indicator { width: 66px; height: 66px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: .25s ease; }
+.lamp-indicator svg { width: 32px; height: 32px; }
+.lamp-indicator.off { background: #f3f4f6; color: #9ca3af; box-shadow: inset 0 0 0 1px #e5e7eb; }
+.lamp-indicator.on { background: #fef3c7; color: #f59e0b; box-shadow: 0 0 18px rgba(245,158,11,.3); }
+#lampStatusText { font-size: 24px; font-weight: 700; }
+.lamp-indicator.on + strong { color: #16a34a; }
+.lamp-indicator.off + strong { color: #dc2626; }
+.status-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 25px; padding: 0 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.status-badge.on { background: #dcfce7; color: #15803d; }
+.status-badge.off { background: #fee2e2; color: #dc2626; }
+
+.mode-label { font-size: 14px; font-weight: 700; color: #6b7280; }
+.mode-buttons { display: flex; gap: 12px; margin-top: 4px; }
+.mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #4b5563;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mode-btn:hover { background: #f9fafb; border-color: #9ca3af; }
+.mode-btn.active { background: #111827; border-color: #111827; color: #fff; }
+.mode-btn i { width: 20px; height: 20px; }
+.manual-control { display: flex; gap: 10px; margin-top: 12px; }
+.control-btn { flex: 1; padding: 6px 9px; border: 1px solid #a7f3d0; border-radius: 8px; background: #ecfdf5; color: #047857; font-weight: 600; }
+.control-btn.secondary { border-color: #fecaca; background: #fef2f2; color: #dc2626; }
+.control-btn.active { color: #fff; background: #059669; border-color: #059669; }
+.control-btn.secondary.active { background: #dc2626; border-color: #dc2626; }
+
+.schedule-grid { min-height: 125px; display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 20px; }
+.schedule-divider { width: 1px; height: 76px; background: #e5e7eb; }
+.schedule-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.schedule-info { display: flex; flex-direction: column; gap: 5px; }
+.schedule-label { font-size: 13px; font-weight: 600; color: #374151; }
+.schedule-info strong { font-size: 23px; color: #111827; }
+.schedule-item input[type="time"] { width: 112px; padding: 10px 11px; border: 1px solid #d1d5db; border-radius: 9px; background: #fff; color: #111827; font-size: 14px; font-weight: 600; text-align: center; outline: none; }
+.schedule-item input[type="time"]:focus { border-color: #111827; box-shadow: 0 0 0 2px rgba(17,24,39,.07); }
+.icon-button { width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #d1d5db; border-radius: 10px; background: #fff; color: #111827; }
+.icon-button:hover { background: #f9fafb; border-color: #9ca3af; }
+.icon-button svg { width: 21px; height: 21px; }
+
+.dashboard-footer { margin-top: 16px; padding: 12px 0; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 12px; }
+.location-error-page { min-height: 100vh; display: none; align-items: center; justify-content: center; padding: 24px; }
+.location-error { width: 100%; max-width: 420px; padding: 32px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center; }
+.error-icon { width: 52px; height: 52px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #fef2f2; color: #dc2626; }
+.location-error h2 { margin-bottom: 8px; font-size: 18px; }
+.location-error p { color: #6b7280; font-size: 13px; line-height: 1.6; }
+.hidden { display: none !important; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid #6b7280; outline-offset: 2px; }
+
+@media (max-width: 900px) {
+    .dashboard { padding: 20px; }
+    .dashboard-header { align-items: flex-start; flex-direction: column; }
+    .header-right { width: 100%; justify-content: space-between; }
+    .dashboard-content { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 650px) {
+    .dashboard { padding: 14px; }
+    .brand h1 { font-size: 24px; }
+    .header-right { flex-direction: column; align-items: stretch; gap: 12px; }
+    .location-selector { width: 100%; min-width: 0; }
+    .clock { width: 100%; align-items: flex-start; }
+    .dashboard-content { grid-template-columns: 1fr; }
+    .dashboard-card { min-height: 0; padding: 18px; }
+    .schedule-grid { grid-template-columns: 1fr; gap: 14px; }
+    .schedule-divider { display: none; }
+    .schedule-item { padding-bottom: 14px; border-bottom: 1px solid #e5e7eb; }
+    .schedule-item:last-child { padding-bottom: 0; border-bottom: 0; }
+}
+@media (max-width: 420px) {
+    .wifi-current { gap: 7px; }
+    .wifi-rssi-inline { margin-left: 0; }
+    .mode-buttons { flex-direction: column; }
+    .mode-btn { min-height: 58px; }
+}

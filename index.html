@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart GA</title>
+    <link rel="icon" type="image/png" href="./logo.png?v=4">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="refreshOverlay" class="refresh-overlay">
+    <div class="refresh-loader">
+
+        <div class="refresh-logo">
+            <img src="logo.png" alt="Smart GA">
+        </div>
+
+        <div class="refresh-title">
+            Smart GA
+        </div>
+
+        <div class="refresh-subtitle">
+            Memperbarui dashboard...
+        </div>
+
+    </div>
+</div>
+
+<div class="dashboard">
+    <header class="dashboard-header">
+        <div class="brand">
+            <h1>GA Smart Light Control</h1>
+            <span>Automatic Street Light Controller</span>
+        </div>
+
+        <div class="header-right">
+            <div class="location-selector">
+                <i data-lucide="map-pin"></i>
+                <select id="pjuLocation">
+                    <option value="">Loading device...</option>
+                </select>
+                <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="clock">
+                <strong id="systemTime">00:00:00</strong>
+                <span id="systemDate">--/--/----</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <!-- DEVICE -->
+        <section class="dashboard-card device-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="cpu"></i>
+                    <span>Device</span>
+                </div>
+            </div>
+
+            <div id="deviceStatus" class="device-status offline">Offline</div>
+
+            <div class="wifi-device-section">
+                <div class="wifi-device-label">Wi-Fi</div>
+
+                <div class="wifi-dropdown-wrapper">
+                    <button type="button" id="wifiSSIDDropdown" class="wifi-dropdown-button" aria-label="Pilih jaringan Wi-Fi">
+                        <span class="wifi-current">
+                            <span class="wifi-signal-bars" id="wifiSignal" aria-hidden="true">
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                            </span>
+
+                            <span id="wifiSSID" class="wifi-dropdown-value">-</span>
+
+                            <span id="rssiValue" class="wifi-rssi-inline">-</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="wifi-chevron"></i>
+                    </button>
+
+                    <div id="wifiDropdownMenu" class="wifi-dropdown-menu">
+                        <div id="wifiNetworkList" class="wifi-network-list">
+                            <div class="wifi-network-empty">Belum ada jaringan</div>
+                        </div>
+                        <button type="button" id="wifiScanBtn" class="wifi-scan-option">
+                            <i data-lucide="refresh-cw"></i>
+                            <span>Scan Wi-Fi</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wifiPasswordSection" class="wifi-password-section">
+                <label for="wifiPassword" class="wifi-device-label">
+                    Password
+                </label>
+
+                <div class="wifi-password-wrapper">
+                    <input
+                        type="password"
+                        id="wifiPassword"
+                        class="wifi-password"
+                        placeholder="Masukkan password Wi-Fi"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        id="wifiPasswordToggle"
+                        class="wifi-password-toggle"
+                        title="Lihat password"
+                        aria-label="Lihat password"
+                    >
+                        <i data-lucide="eye"></i>
+                    </button>
+                </div>
+
+                <button type="button" id="wifiConnectBtn" class="wifi-connect-btn">
+                    <i data-lucide="wifi"></i>
+                    <span>Connect</span>
+                </button>
+
+                <div id="wifiConfigStatus" class="wifi-config-status"></div>
+            </div>
+        </section>
+
+        <!-- LAMP STATUS -->
+        <section class="dashboard-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="lightbulb"></i>
+                    <span>Lamp Status</span>
+                </div>
+                <span id="lampStatusBadge" class="status-badge off">OFF</span>
+            </div>
+
+            <div class="lamp-status">
+                <div id="lampIndicator" class="lamp-indicator off">
+                    <i data-lucide="lightbulb"></i>
+                </div>
+                <strong id="lampStatusText">OFF</strong>
+            </div>
+        </section>
+
+        <!-- SCHEDULE -->
+        <section class="dashboard-card schedule-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="clock-3"></i>
+                    <span>Schedule</span>
+                </div>
+                <button id="saveScheduleBtn" class="icon-button" type="button" title="Simpan schedule">
+                    <i data-lucide="save"></i>
+                </button>
+            </div>
+
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <span class="schedule-label">Turn ON</span>
+                        <strong id="onSchedule">18:00</strong>
+                    </div>
+                    <input type="time" id="onTimeInput" value="18:00">
+                </div>
+
+                <div class="schedule-divider"></div>
+
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <span class="schedule-label">Turn OFF</span>
+                        <strong id="offSchedule">05:30</strong>
+                    </div>
+                    <input type="time" id="offTimeInput" value="05:30">
+                </div>
+            </div>
+        </section>
+
+        <!-- MODE -->
+        <section class="dashboard-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="sliders-horizontal"></i>
+                    <span>Mode</span>
+                </div>
+                <span id="modeValue" class="mode-label">AUTO</span>
+            </div>
+
+            <div class="mode-buttons">
+                <button id="autoModeBtn" class="mode-btn active" type="button">
+                    <i data-lucide="calendar-clock"></i>
+                    <span>AUTO</span>
+                </button>
+                <button id="manualModeBtn" class="mode-btn" type="button">
+                    <i data-lucide="hand"></i>
+                    <span>MANUAL</span>
+                </button>
+            </div>
+
+            <div id="manualControl" class="manual-control" style="display:none;">
+                <button id="lampOnBtn" class="control-btn" type="button">
+                    <i data-lucide="power"></i> ON
+                </button>
+                <button id="lampOffBtn" class="control-btn secondary" type="button">
+                    <i data-lucide="power"></i> OFF
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div id="locationErrorPage" class="location-error-page" style="display:none;">
+        <div class="location-error">
+            <div class="error-icon"><i data-lucide="triangle-alert"></i></div>
+            <h2 id="locationErrorTitle">DEVICE NOT FOUND</h2>
+            <p id="locationErrorMessage">Belum ada perangkat yang terpasang pada lokasi ini.</p>
+        </div>
+    </div>
+
+    <footer class="dashboard-footer">
+        <span id="lastUpdate">Last update: --</span>
+    </footer>
+</div>
+
+<script type="module" src="app.js"></script>
+<script>
+    window.addEventListener("load", () => {
+        if (typeof lucide !== "undefined") lucide.createIcons();
+    });
+</script>
+</body>
+</html>
